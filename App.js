@@ -5,15 +5,18 @@ import {
   AsyncStorage,
   TextInput,
   Keyboard,
-  Platform, Header
+  Platform, Header, TouchableHighlight
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   StackNavigator,
 } from 'react-navigation';
 import { SuitcaseButton } from './components/SuitcaseButton';
+import { Tiles } from './components/Tiles';
 import ActionButton from 'react-native-action-button';
 import { List, ListItem } from "react-native-elements"
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+
 
 const isAndroid = Platform.OS == "android";
 
@@ -21,7 +24,7 @@ const viewPadding = 10;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Home',
+    title: 'Suitcases',
   };
   constructor(props) {
     super(props);
@@ -39,10 +42,9 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     this.makeRemoteRequest();
   }
-
   makeRemoteRequest = () => {
     const { page, seed } = this.state;
-    const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=20`;
+    const url = `https://api.myjson.com/bins/12qlul`;
     this.setState({ loading: true });
     fetch(url)
       .then(res => res.json())
@@ -61,16 +63,14 @@ class HomeScreen extends React.Component {
   onLearnMore = (navDetails) => {
     this.props.navigation.navigate('Details', {
       itemId: navDetails.itemId,
-      otherParam: navDetails.itemId,
-    });
-  };
-  render() {
-    var trips = ["Texas", "HongKong", "India"];
-    {/*var textInputComponents = trips.map((type) => <SuitcaseButton onPress={() => this.onLearnMore({
-      itemId: { type },
-      otherParam: 'anything you want here',
-    })}><Text style={styles.TextStyle}>{type} </Text></SuitcaseButton>)*/}
+      otherParam: navDetails.email,
+    })};
+    setUpNavigation = (navDetails) => {
+      this.props.navigation.navigate('SetUpScreen')
 
+    };
+  render() {
+    var counter = 0;
     return (
 
       <View style={styles.container}>
@@ -83,13 +83,13 @@ class HomeScreen extends React.Component {
                 <SuitcaseButton onPress={() => this.props.navigation.navigate('Details', {
                   itemId: `${item.name.first}`,
                   otherParam: { uri: item.picture.thumbnail },
-
+                  email: item.email,
                 })}>
                   <Image
                     style={{ width: 50, height: 50 }}
                     source={{ uri: item.picture.thumbnail }}
                   />
-                  
+
                   <Text style={styles.TextStyle}> {item.name.first} </Text>
 
                 </SuitcaseButton>
@@ -118,29 +118,21 @@ class HomeScreen extends React.Component {
 
             </SuitcaseButton>
           </View>
-          <View style={styles.row}>
-            <SuitcaseButton onPress={() => this.onLearnMore(
-              86,
-              'anything you want here',
-            )}>
-              <Text style={styles.TextStyle}> HongKong to Texas </Text>
 
-            </SuitcaseButton>
-            <TouchableOpacity style={styles.Suitcase} onPress={() => this.onLearnMore(
-              86,
-              'anything you want here',
-            )} activeOpacity={0.5}>
-              <View style={styles.SeparatorLine} />
-              <Text style={styles.TextStyle}> HongKong to Texas </Text>
-
-            </TouchableOpacity>
-          </View>
 
         </ScrollView>
-        <ActionButton
-          buttonColor="rgba(231,76,60,1)"
-          onPress={() => { console.log("hi") }}
-        />
+
+        <ActionButton buttonColor="rgba(231,76,60,1)">
+          <ActionButton.Item buttonColor='#9b59b6' title="New Suitcase" onPress={() => this.setUpNavigation()}>
+            <Icon name="md-create" style={styles.actionButtonIcon} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#3498db' title="Settings" onPress={() => {}}>
+            <Icon name="md-notifications-off" style={styles.actionButtonIcon} />
+          </ActionButton.Item>
+          <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => { }}>
+            <Icon name="md-done-all" style={styles.actionButtonIcon} />
+          </ActionButton.Item>
+        </ActionButton>
       </View>
     );
   }
@@ -151,12 +143,14 @@ class TodoList extends Component {
     tasks: [],
     text: ""
   };
+
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
     return {
-      title: params ? ("Checklist for " +params.itemId) : 'A Nested Details Screen',
+      title: params ? ("Checklist for " + params.itemId) : 'A Nested Details Screen',
     }
+
   };
 
   changeTextHandler = text => {
@@ -178,6 +172,7 @@ class TodoList extends Component {
         () => Tasks.save(this.state.tasks)
       );
     }
+    console.log(this.state.tasks);
   };
 
   deleteTask = i => {
@@ -203,8 +198,30 @@ class TodoList extends Component {
       isAndroid ? "keyboardDidHide" : "keyboardWillHide",
       () => this.setState({ viewMargin: viewPadding })
     );
+    Tasks.all(tasks => this.setState({
+      tasks: tasks || [{
+        "key": 0,
+        "text": "Sup",
+      },
+      {
+        "key": 1,
+        "text": "Hi",
+      },
+      {
+        "key": 2,
+        "text": "Sup",
+      },
+      {
+        "key": 3,
+        "text": "Sss",
+      },
+      {
+        "key": 4,
+        "text": "ALOL",
+      }]
+    }));
+    console.log(this.state.tasks)
 
-    Tasks.all(tasks => this.setState({ tasks: tasks || [] }));
   }
 
 
@@ -212,6 +229,7 @@ class TodoList extends Component {
     const { params } = this.props.navigation.state;
     const itemId = params ? params.itemId : null;
     const otherParam = params ? params.otherParam : null;
+
 
     return (
 
@@ -271,22 +289,118 @@ let Tasks = {
   }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 class SetUp extends Component {
+  static navigationOptions = {
+    title: 'Set up',
+  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: false,
+      data: [],
+      page: 1,
+      seed: 1,
+      error: null,
+      refreshing: false,
+
+    };
+  }
+
+  onLearnMore = (navDetails) => {
+    this.props.navigation.navigate('Details', {
+      itemId: navDetails.itemId,
+      otherParam: navDetails.email,
+    });
+  };
 
   render() {
-      return (
-        <View style={styles.container}>
-        <SectionList
-          sections={[
-            {title: 'D', data: ['Devin']},
-            {title: 'J', data: ['Jackson', 'James', 'Jillian', 'Jimmy', 'Joel', 'John', 'Julie']},
-          ]}
-          renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
-          renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-          keyExtractor={(item, index) => index}
-        />
+    var counter = [];
+    return (
+      
+      <View style={styles.container}>
+        <ScrollView>
+        <Text style={styles.BigText}>Tap</Text>
+          <View style={styles.row}>
+            
+            <Tiles>
+              <Icon name="beach" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Vacation </Text>
+
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+          </View>
+          <View style={styles.row}>
+            
+            <Tiles>
+              <Icon name="beach" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Vacation </Text>
+
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+          </View>
+          <View style={styles.row}>
+            
+            <Tiles>
+              <Icon name="beach" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Vacation </Text>
+
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+          </View>
+          <View style={styles.row}>
+            
+            <Tiles>
+              <Icon name="beach" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Vacation </Text>
+
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+            <Tiles>
+              <Icon name="domain" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Business Trip </Text>
+            </Tiles>
+          </View>
+          
+
+
+        </ScrollView>
+
       </View>
-      )
+    );
   }
 }
 
@@ -299,6 +413,10 @@ const RootStack = StackNavigator(
     },
     Details: {
       screen: TodoList,
+
+    },
+    SetUpScreen: {
+      screen: SetUp,
 
     },
   },
@@ -315,10 +433,19 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 30,
+    flex: 10,
+    marginTop: 10,
     flexDirection: 'column',
     justifyContent: 'center'
+    
+  },
+  SetUpScreenContainer: {
+    flex: 1,
+    marginTop: 10,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+    
   },
   header: {
     height: 40,
@@ -385,6 +512,18 @@ const styles = StyleSheet.create({
     margin: 5,
 
   },
+  SuitcaseAlt: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderWidth: 5,
+    borderColor: '#1E88E5',
+    height: 100,
+    borderRadius: 15,
+    width: 10,
+    margin: 5,
+
+  },
 
   ImageIconStyle: {
     padding: 10,
@@ -399,7 +538,7 @@ const styles = StyleSheet.create({
 
     color: "#fff",
     marginBottom: 4,
-    marginRight: 20,
+
 
   },
 
@@ -443,6 +582,9 @@ const styles = StyleSheet.create({
     borderWidth: isAndroid ? 0 : 1,
     width: "100%"
   },
+  textInputAlt: {
+    borderColor: '#e71636',
+  },
   sectionHeader: {
     paddingTop: 2,
     paddingLeft: 10,
@@ -456,6 +598,12 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
+  },
+  BigText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 30,
+
   },
 
 });

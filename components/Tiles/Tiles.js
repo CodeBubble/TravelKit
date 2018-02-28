@@ -5,16 +5,21 @@ import { View, TouchableOpacity, Text, StyleSheet, Button, Image } from 'react-n
 import styles from './styles';
 
 
-export default class SuitcaseButton extends Component {
+export default class Tiles extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            toggle: false,
+        }
+
     }
     
+ 
     render() {
         return (
 
-            <TouchableOpacity style={styles.Suitcase}
-                onPress={this.props.onPress}
+            <TouchableOpacity style={[styles.Suitcase, this.state.toggle && styles.SuitcaseAlt]}
+            onPress={() => this.setState({ toggle: !this.state.toggle })}
                 activeOpacity={0.5}
             >
                 {this.props.children}
