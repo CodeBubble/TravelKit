@@ -124,13 +124,13 @@ class HomeScreen extends React.Component {
 
         <ActionButton buttonColor="rgba(231,76,60,1)">
           <ActionButton.Item buttonColor='#9b59b6' title="New Suitcase" onPress={() => this.setUpNavigation()}>
-            <Icon name="md-create" style={styles.actionButtonIcon} />
+            <Icon name="plus" style={styles.actionButtonIcon} />
           </ActionButton.Item>
           <ActionButton.Item buttonColor='#3498db' title="Settings" onPress={() => {}}>
-            <Icon name="md-notifications-off" style={styles.actionButtonIcon} />
+            <Icon name="settings" style={styles.actionButtonIcon} />
           </ActionButton.Item>
           <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => { }}>
-            <Icon name="md-done-all" style={styles.actionButtonIcon} />
+            <Icon name="all-inclusive" style={styles.actionButtonIcon} />
           </ActionButton.Item>
         </ActionButton>
       </View>

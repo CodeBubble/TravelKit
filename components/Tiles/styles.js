@@ -19,7 +19,7 @@ export default StyleSheet.create({
 SuitcaseAlt: {
   flexDirection: 'column',
   alignItems: 'center',
-  backgroundColor: '#84FFFF',
+  backgroundColor: '#B2EBF2',
   borderWidth: 5,
   borderColor: '#B2EBF2',
   height: 100,

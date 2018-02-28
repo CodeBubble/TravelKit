@@ -19,7 +19,7 @@ export default class Tiles extends Component {
         return (
 
             <TouchableOpacity style={[styles.Suitcase, this.state.toggle && styles.SuitcaseAlt]}
-            onPress={() => this.setState({ toggle: !this.state.toggle })}
+            onPress={() => {this.setState({ toggle: !this.state.toggle}); console.log(this.props.Text);}}
                 activeOpacity={0.5}
             >
                 {this.props.children}
