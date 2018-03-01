@@ -44,7 +44,7 @@ class HomeScreen extends React.Component {
     this.makeRemoteRequest();
   }
   makeRemoteRequest = () => {
-    fetch("http://travelkit.herokuapp.com/api/user/tina91/todolists", { method: "GET" })
+    fetch("http://travelkit.herokuapp.com/api/user/raj/todolists", { method: "GET" })
       .then((response) => response.json())
       .then((responseData) => {
 
@@ -102,7 +102,7 @@ class HomeScreen extends React.Component {
               </View>
             )}
           />
-          <View style={styles.row}>
+          {/*<View style={styles.row}>
             <SuitcaseButton onPress={() => this.props.navigation.navigate('Details', {
               itemId: 86,
               otherParam: "hey",
@@ -116,8 +116,8 @@ class HomeScreen extends React.Component {
             })}>
               <Text style={styles.TextStyle}> HongKong to Texas </Text>
 
-            </SuitcaseButton>
-          </View>
+          </SuitcaseButton>
+          </View>*/}
 
 
         </ScrollView>
@@ -187,8 +187,23 @@ class TodoList extends Component {
       () => Tasks.save(this.state.tasks)
     );
   };
+  makeRemoteRequest = () => {
+    fetch("http://travelkit.herokuapp.com/api/user/raj/todolists/42/todos", { method: "GET" })
+      .then((response) => response.json())
+      .then((responseData) => {
+
+        this.setState({
+          data: responseData.todolists.map(function (val) {
+            return val.title
+          })
+        })
+        console.log(responseData.todolists);
+      })
+      .done();
+  };
 
   componentDidMount() {
+   
     Keyboard.addListener(
       isAndroid ? "keyboardDidShow" : "keyboardWillShow",
       e => this.setState({ viewMargin: e.endCoordinates.height + viewPadding })
@@ -219,6 +234,7 @@ class TodoList extends Component {
         "key": 4,
         "text": "ALOL",
       }]
+      
     }));
     console.log(this.state.tasks)
 
@@ -311,7 +327,18 @@ class SetUp extends Component {
 
     };
   }
-
+  goBack = () => {
+    fetch("http://travelkit.herokuapp.com/api/user/raj/todolists", {method: "POST", body: JSON.stringify({title: "nraboy", username: "Nic"})})
+    .then((response) => response.json())
+    .then((responseData) => {
+        AlertIOS.alert(
+            "POST Response",
+            "Response Body -> " + JSON.stringify(responseData.body)
+        )
+    })
+    .done();
+      this.props.navigation;
+  };
 
 
   render() {
@@ -321,8 +348,27 @@ class SetUp extends Component {
     return (
 
       <View style={styles.container}>
+                <Text style={styles.BigText}>Tap</Text>
+
         <ScrollView>
-          <Text style={styles.BigText}>Tap</Text>
+          <TextInput
+          style={styles.textInput}
+          onChangeText={this.changeTextHandler}
+          onSubmitEditing={this.addTask}
+          value={this.state.text}
+          placeholder="Enter Suitcase Name"
+          returnKeyType="done"
+          returnKeyLabel="done"
+        />
+        <TextInput
+          style={styles.textInput}
+          onChangeText={this.changeTextHandler}
+          onSubmitEditing={this.addTask}
+          value={this.state.text}
+          placeholder="Enter City Name"
+          returnKeyType="done"
+          returnKeyLabel="done"
+        />
           <View style={styles.row}>
 
             <Tiles>
