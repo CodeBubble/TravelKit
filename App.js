@@ -44,52 +44,34 @@ class HomeScreen extends React.Component {
     this.makeRemoteRequest();
   }
   makeRemoteRequest = () => {
-    {/*const { page, seed } = this.state;
-    const url = `https://api.myjson.com/bins/12qlul`;
-    this.setState({ loading: true });
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
+    fetch("http://travelkit.herokuapp.com/api/user/tina91/todolists", { method: "GET" })
+      .then((response) => response.json())
+      .then((responseData) => {
+
         this.setState({
-          data: page === 1 ? res.results : [...this.state.data, ...res.results],
-          error: res.error || null,
-          loading: false,
-          refreshing: false
-        });
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });*/}
-      fetch("http://travelkit.herokuapp.com/api/user/tina91/todolists", {method: "GET"})
-        .then((response) => response.json())
-        .then((responseData) => {
-            AlertIOS.alert(
-                "GET Response",
-                "Search Query -> " + JSON.stringify(responseData.todolists[0].title)
-            )
-            this.setState({
-              data: responseData.todolists.map(function (val) {
-                return val.title
-              })
-            })
-            console.log(responseData.todolists);
+          data: responseData.todolists.map(function (val) {
+            return val.title
+          })
         })
-        .done();
+        console.log(responseData.todolists);
+      })
+      .done();
   };
-  
+
   onLearnMore = (navDetails) => {
     this.props.navigation.navigate('Details', {
       itemId: navDetails.itemId,
       otherParam: navDetails.email,
-    })};
-    setUpNavigation = (navDetails) => {
-      this.props.navigation.navigate('SetUpScreen')
+    })
+  };
+  setUpNavigation = (navDetails) => {
+    this.props.navigation.navigate('SetUpScreen')
 
-    };
-    settingsNavigation = (navDetails) => {
-      this.props.navigation.navigate('Settings')
+  };
+  settingsNavigation = (navDetails) => {
+    this.props.navigation.navigate('Settings')
 
-    };
+  };
   render() {
     var counter = 0;
     return (
@@ -106,7 +88,7 @@ class HomeScreen extends React.Component {
                   otherParam: null,
                   email: null,
                 })}>
-                  
+
 
                   <Text style={styles.TextStyle}> {item} </Text>
 
@@ -144,7 +126,7 @@ class HomeScreen extends React.Component {
           <ActionButton.Item buttonColor='#9b59b6' title="New Suitcase" onPress={() => this.setUpNavigation()}>
             <Icon name="plus" style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#3498db' title="Settings" onPress={() => {this.settingsNavigation()}}>
+          <ActionButton.Item buttonColor='#3498db' title="Settings" onPress={() => { this.settingsNavigation() }}>
             <Icon name="settings" style={styles.actionButtonIcon} />
           </ActionButton.Item>
           <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => { }}>
@@ -312,14 +294,6 @@ let Tasks = {
 
 
 
-
-
-
-
-
-
-
-
 class SetUp extends Component {
   static navigationOptions = {
     title: 'Set up',
@@ -338,22 +312,19 @@ class SetUp extends Component {
     };
   }
 
-  onLearnMore = (navDetails) => {
-    this.props.navigation.navigate('Details', {
-      itemId: navDetails.itemId,
-      otherParam: navDetails.email,
-    });
-  };
+
 
   render() {
+    const {goBack} = this.props.navigation;
+
     var counter = [];
     return (
-      
+
       <View style={styles.container}>
         <ScrollView>
-        <Text style={styles.BigText}>Tap</Text>
+          <Text style={styles.BigText}>Tap</Text>
           <View style={styles.row}>
-            
+
             <Tiles>
               <Icon name="beach" size={30} color="#ffffff" />
               <Text style={styles.TextStyle}> Vacation </Text>
@@ -365,58 +336,38 @@ class SetUp extends Component {
             </Tiles>
           </View>
           <View style={styles.row}>
-            
+
             <Tiles>
               <Icon name="beach" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Vacation </Text>
+              <Text style={styles.TextStyle}> Visit beach </Text>
 
             </Tiles>
+
             <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
-            </Tiles>
-            <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
+              <Icon name="map" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Explore culture </Text>
             </Tiles>
           </View>
           <View style={styles.row}>
-            
+
             <Tiles>
-              <Icon name="beach" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Vacation </Text>
+              <Icon name="food" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Recommended restaurants </Text>
 
             </Tiles>
             <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
+              <Icon name="hotel" size={30} color="#ffffff" />
+              <Text style={styles.TextStyle}> Recommended hotels </Text>
             </Tiles>
-            <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
-            </Tiles>
-          </View>
-          <View style={styles.row}>
-            
-            <Tiles>
-              <Icon name="beach" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Vacation </Text>
 
-            </Tiles>
-            <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
-            </Tiles>
-            <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
-            </Tiles>
           </View>
-          
 
 
         </ScrollView>
 
+        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => goBack()}>
+
+        </ActionButton>
       </View>
     );
   }
@@ -458,7 +409,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'column',
     justifyContent: 'center'
-    
+
   },
   SetUpScreenContainer: {
     flex: 1,
@@ -466,7 +417,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
-    
+
   },
   header: {
     height: 40,
