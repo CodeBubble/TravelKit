@@ -5,7 +5,7 @@ import {
   AsyncStorage,
   TextInput,
   Keyboard,
-  Platform, Header, TouchableHighlight
+  Platform, Header, TouchableHighlight, AlertIOS
 } from 'react-native';
 import {
   StackNavigator,
@@ -15,6 +15,7 @@ import { Tiles } from './components/Tiles';
 import ActionButton from 'react-native-action-button';
 import { List, ListItem } from "react-native-elements"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 
 
@@ -43,7 +44,7 @@ class HomeScreen extends React.Component {
     this.makeRemoteRequest();
   }
   makeRemoteRequest = () => {
-    const { page, seed } = this.state;
+    {/*const { page, seed } = this.state;
     const url = `https://api.myjson.com/bins/12qlul`;
     this.setState({ loading: true });
     fetch(url)
@@ -58,8 +59,24 @@ class HomeScreen extends React.Component {
       })
       .catch(error => {
         this.setState({ error, loading: false });
-      });
+      });*/}
+      fetch("http://travelkit.herokuapp.com/api/user/tina91/todolists", {method: "GET"})
+        .then((response) => response.json())
+        .then((responseData) => {
+            AlertIOS.alert(
+                "GET Response",
+                "Search Query -> " + JSON.stringify(responseData.todolists[0].title)
+            )
+            this.setState({
+              data: responseData.todolists.map(function (val) {
+                return val.title
+              })
+            })
+            console.log(responseData.todolists);
+        })
+        .done();
   };
+  
   onLearnMore = (navDetails) => {
     this.props.navigation.navigate('Details', {
       itemId: navDetails.itemId,
@@ -67,6 +84,10 @@ class HomeScreen extends React.Component {
     })};
     setUpNavigation = (navDetails) => {
       this.props.navigation.navigate('SetUpScreen')
+
+    };
+    settingsNavigation = (navDetails) => {
+      this.props.navigation.navigate('Settings')
 
     };
   render() {
@@ -81,16 +102,13 @@ class HomeScreen extends React.Component {
             renderItem={({ item }) => (
               <View>
                 <SuitcaseButton onPress={() => this.props.navigation.navigate('Details', {
-                  itemId: `${item.name.first}`,
-                  otherParam: { uri: item.picture.thumbnail },
-                  email: item.email,
+                  itemId: `${item.title}`,
+                  otherParam: null,
+                  email: null,
                 })}>
-                  <Image
-                    style={{ width: 50, height: 50 }}
-                    source={{ uri: item.picture.thumbnail }}
-                  />
+                  
 
-                  <Text style={styles.TextStyle}> {item.name.first} </Text>
+                  <Text style={styles.TextStyle}> {item} </Text>
 
                 </SuitcaseButton>
                 {/*<ListItem
@@ -126,7 +144,7 @@ class HomeScreen extends React.Component {
           <ActionButton.Item buttonColor='#9b59b6' title="New Suitcase" onPress={() => this.setUpNavigation()}>
             <Icon name="plus" style={styles.actionButtonIcon} />
           </ActionButton.Item>
-          <ActionButton.Item buttonColor='#3498db' title="Settings" onPress={() => {}}>
+          <ActionButton.Item buttonColor='#3498db' title="Settings" onPress={() => {this.settingsNavigation()}}>
             <Icon name="settings" style={styles.actionButtonIcon} />
           </ActionButton.Item>
           <ActionButton.Item buttonColor='#1abc9c' title="All Tasks" onPress={() => { }}>
@@ -404,6 +422,8 @@ class SetUp extends Component {
   }
 }
 
+
+
 const RootStack = StackNavigator(
   {
     Home: {
@@ -419,6 +439,7 @@ const RootStack = StackNavigator(
       screen: SetUp,
 
     },
+
   },
   {
     initialRouteName: 'Home',
