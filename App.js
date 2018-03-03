@@ -78,6 +78,10 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Settings')
 
   };
+
+  deleteSuitcase = (suitcaseName) => {
+    //code for deleting the suitcase
+  }
   render() {
     var counter = 0;
     return (
@@ -100,7 +104,8 @@ class HomeScreen extends React.Component {
                   itemId: `${item}`,
                   otherParam: null,
                   email: null,
-                })}>
+                })}
+                onLongPress={() => this.deleteSuitcase(`${item}`)>
 
 
                   <Text style={styles.TextStyle}> {item} </Text>
@@ -201,7 +206,7 @@ class TodoList extends Component {
     );
   };
   makeRemoteRequest = () => {
-    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolist/48/todos/", { method: "GET" })
+    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolist/50/todos/", { method: "GET" })
     .then((response) => response.json())
     .then((responseData) => {
 

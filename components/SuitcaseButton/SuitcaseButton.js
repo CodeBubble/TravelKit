@@ -16,6 +16,7 @@ export default class SuitcaseButton extends Component {
             <TouchableOpacity style={styles.Suitcase}
                 onPress={this.props.onPress}
                 activeOpacity={0.5}
+                onLongPress={this.props.onLongPress}
             >
                 {this.props.children}
 
