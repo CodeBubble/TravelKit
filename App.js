@@ -105,7 +105,7 @@ class HomeScreen extends React.Component {
                   otherParam: null,
                   email: null,
                 })}
-                onLongPress={() => this.deleteSuitcase(`${item}`)>
+                onLongPress={() => this.deleteSuitcase(`${item}`)}>
 
 
                   <Text style={styles.TextStyle}> {item} </Text>
