@@ -5,7 +5,7 @@ import {
   AsyncStorage,
   TextInput,
   Keyboard,
-  Platform, Header, TouchableHighlight, AlertIOS
+  Platform, Header, TouchableHighlight, AlertIOS, RefreshControl
 } from 'react-native';
 import {
   StackNavigator,
@@ -39,12 +39,17 @@ class HomeScreen extends React.Component {
       refreshing: false,
     };
   }
+  _onRefresh() {
+    this.setState({refreshing: true});
+    this.makeRemoteRequest();
+  }
+  
 
   componentDidMount() {
     this.makeRemoteRequest();
   }
   makeRemoteRequest = () => {
-    fetch("http://travelkit.herokuapp.com/api/user/raj/todolists", { method: "GET" })
+    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolists", { method: "GET" })
       .then((response) => response.json())
       .then((responseData) => {
 
@@ -56,6 +61,7 @@ class HomeScreen extends React.Component {
         console.log(responseData.todolists);
       })
       .done();
+      this.setState({refreshing: false});
   };
 
   onLearnMore = (navDetails) => {
@@ -78,13 +84,20 @@ class HomeScreen extends React.Component {
 
       <View style={styles.container}>
 
-        <ScrollView>
-          <FlatList
+        <ScrollView 
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)}
+          />
+        }>
+          <FlatList 
+          
             data={this.state.data}
             renderItem={({ item }) => (
               <View>
-                <SuitcaseButton onPress={() => this.props.navigation.navigate('Details', {
-                  itemId: `${item.title}`,
+                <SuitcaseButton onPress={() => this.onLearnMore({
+                  itemId: `${item}`,
                   otherParam: null,
                   email: null,
                 })}>
@@ -188,22 +201,22 @@ class TodoList extends Component {
     );
   };
   makeRemoteRequest = () => {
-    fetch("http://travelkit.herokuapp.com/api/user/raj/todolists/42/todos", { method: "GET" })
-      .then((response) => response.json())
-      .then((responseData) => {
+    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolist/48/todos/", { method: "GET" })
+    .then((response) => response.json())
+    .then((responseData) => {
 
-        this.setState({
-          data: responseData.todolists.map(function (val) {
-            return val.title
-          })
+      this.setState({
+        tasks: responseData.todos.map(function (val) {
+          return val.description
         })
-        console.log(responseData.todolists);
       })
-      .done();
+      console.log(this.state.tasks);
+    })
+    .done();
   };
 
   componentDidMount() {
-   
+    
     Keyboard.addListener(
       isAndroid ? "keyboardDidShow" : "keyboardWillShow",
       e => this.setState({ viewMargin: e.endCoordinates.height + viewPadding })
@@ -213,29 +226,7 @@ class TodoList extends Component {
       isAndroid ? "keyboardDidHide" : "keyboardWillHide",
       () => this.setState({ viewMargin: viewPadding })
     );
-    Tasks.all(tasks => this.setState({
-      tasks: tasks || [{
-        "key": 0,
-        "text": "Sup",
-      },
-      {
-        "key": 1,
-        "text": "Hi",
-      },
-      {
-        "key": 2,
-        "text": "Sup",
-      },
-      {
-        "key": 3,
-        "text": "Sss",
-      },
-      {
-        "key": 4,
-        "text": "ALOL",
-      }]
-      
-    }));
+    this.makeRemoteRequest();
     console.log(this.state.tasks)
 
   }
@@ -253,7 +244,6 @@ class TodoList extends Component {
       <View
         style={[styles.container2, { paddingBottom: this.state.viewMargin }]}
       >
-
         <Text>itemId: Checklist for {JSON.stringify(params.itemId)}</Text>
         <FlatList
           style={styles.list}
@@ -264,7 +254,7 @@ class TodoList extends Component {
                 <Text> {JSON.stringify(itemId)} </Text>
                 <Button title="X" onPress={() => this.deleteTask(index)} />
                 <Text style={styles.listItem}>
-                  {item.text}
+                  {item}
                 </Text>
 
 
@@ -327,8 +317,10 @@ class SetUp extends Component {
 
     };
   }
-  goBack = () => {
-    fetch("http://travelkit.herokuapp.com/api/user/raj/todolists", {method: "POST", body: JSON.stringify({title: "nraboy", username: "Nic"})})
+  
+
+  goBack() {
+    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolists", {method: "POST", todolists: JSON.stringify({title: "TestTitle"})})
     .then((response) => response.json())
     .then((responseData) => {
         AlertIOS.alert(
@@ -337,38 +329,36 @@ class SetUp extends Component {
         )
     })
     .done();
-      this.props.navigation;
-  };
-
+    this.props.navigation;
+}
 
   render() {
-    const {goBack} = this.props.navigation;
 
     var counter = [];
     return (
 
       <View style={styles.container}>
-                <Text style={styles.BigText}>Tap</Text>
+        <Text style={styles.BigText}>Tap</Text>
 
         <ScrollView>
           <TextInput
-          style={styles.textInput}
-          onChangeText={this.changeTextHandler}
-          onSubmitEditing={this.addTask}
-          value={this.state.text}
-          placeholder="Enter Suitcase Name"
-          returnKeyType="done"
-          returnKeyLabel="done"
-        />
-        <TextInput
-          style={styles.textInput}
-          onChangeText={this.changeTextHandler}
-          onSubmitEditing={this.addTask}
-          value={this.state.text}
-          placeholder="Enter City Name"
-          returnKeyType="done"
-          returnKeyLabel="done"
-        />
+            style={styles.textInput}
+            onChangeText={this.changeTextHandler}
+            onSubmitEditing={this.addTask}
+            value={this.state.text}
+            placeholder="Enter Suitcase Name"
+            returnKeyType="done"
+            returnKeyLabel="done"
+          />
+          <TextInput
+            style={styles.textInput}
+            onChangeText={this.changeTextHandler}
+            onSubmitEditing={this.addTask}
+            value={this.state.text}
+            placeholder="Enter City Name"
+            returnKeyType="done"
+            returnKeyLabel="done"
+          />
           <View style={styles.row}>
 
             <Tiles>
@@ -411,7 +401,7 @@ class SetUp extends Component {
 
         </ScrollView>
 
-        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => goBack()}>
+        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => this.goBack()}>
 
         </ActionButton>
       </View>
