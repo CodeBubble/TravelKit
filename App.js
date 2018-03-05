@@ -5,7 +5,7 @@ import {
   AsyncStorage,
   TextInput,
   Keyboard,
-  Platform, Header, TouchableHighlight, AlertIOS, RefreshControl
+  Platform, Header, TouchableHighlight, AlertIOS, RefreshControl, Picker, ImageBackground
 } from 'react-native';
 import {
   StackNavigator,
@@ -15,8 +15,7 @@ import { Tiles } from './components/Tiles';
 import ActionButton from 'react-native-action-button';
 import { List, ListItem } from "react-native-elements"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-
+import { SearchBar } from "react-native-elements"
 
 
 const isAndroid = Platform.OS == "android";
@@ -25,7 +24,7 @@ const viewPadding = 10;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Suitcases',
+    title: 'Suitcases for ' + 'Pavan',
   };
   constructor(props) {
     super(props);
@@ -40,10 +39,10 @@ class HomeScreen extends React.Component {
     };
   }
   _onRefresh() {
-    this.setState({refreshing: true});
+    this.setState({ refreshing: true });
     this.makeRemoteRequest();
   }
-  
+
 
   componentDidMount() {
     this.makeRemoteRequest();
@@ -61,7 +60,7 @@ class HomeScreen extends React.Component {
         console.log(responseData.todolists);
       })
       .done();
-      this.setState({refreshing: false});
+    this.setState({ refreshing: false });
   };
 
   onLearnMore = (navDetails) => {
@@ -82,21 +81,34 @@ class HomeScreen extends React.Component {
   deleteSuitcase = (suitcaseName) => {
     //code for deleting the suitcase
   }
+  pictureSelector = (cityName) => {
+    console.log('./assets/images/' + cityName + '.png');
+    return './assets/images/' + cityName + '.png'
+
+  }
+  renderHeader = () => {
+    return <SearchBar placeholder="Type Here..." lightTheme round />;
+  };
+
   render() {
     var counter = 0;
+    var bostonPictureFilePath = require("./assets/images/boston.png");
+    var sanfranciscoPictureFilePath = require("./assets/images/sanfrancisco.png");
     return (
 
       <View style={styles.container}>
 
-        <ScrollView 
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh.bind(this)}
-          />
-        }>
-          <FlatList 
-          
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }>
+
+          <FlatList
+
+            ListHeaderComponent={this.renderHeader}
             data={this.state.data}
             renderItem={({ item }) => (
               <View>
@@ -105,10 +117,16 @@ class HomeScreen extends React.Component {
                   otherParam: null,
                   email: null,
                 })}
-                onLongPress={() => this.deleteSuitcase(`${item}`)}>
+                  onLongPress={() => this.deleteSuitcase(`${item}`)}>
 
+                  <Image style={styles.SuitcaseImageBackground}
+                    source={(sanfranciscoPictureFilePath)}
+                    blurRadius={5}
+                  />
+                  <View style={styles.absoluteView}>
+                    <Text style={styles.BigTextWhite}> {item} </Text>
+                  </View>
 
-                  <Text style={styles.TextStyle}> {item} </Text>
 
                 </SuitcaseButton>
                 {/*<ListItem
@@ -206,22 +224,22 @@ class TodoList extends Component {
     );
   };
   makeRemoteRequest = () => {
-    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolist/50/todos/", { method: "GET" })
-    .then((response) => response.json())
-    .then((responseData) => {
+    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolist/48/todos/", { method: "GET" })
+      .then((response) => response.json())
+      .then((responseData) => {
 
-      this.setState({
-        tasks: responseData.todos.map(function (val) {
-          return val.description
+        this.setState({
+          tasks: responseData.todos.map(function (val) {
+            return val.description
+          })
         })
+        console.log(this.state.tasks);
       })
-      console.log(this.state.tasks);
-    })
-    .done();
+      .done();
   };
 
   componentDidMount() {
-    
+
     Keyboard.addListener(
       isAndroid ? "keyboardDidShow" : "keyboardWillShow",
       e => this.setState({ viewMargin: e.endCoordinates.height + viewPadding })
@@ -245,10 +263,8 @@ class TodoList extends Component {
 
     return (
 
+<ImageBackground style={[styles.container, { paddingBottom: this.state.viewMargin }]} source={require('./assets/images/sanfrancisco.png')} >
 
-      <View
-        style={[styles.container2, { paddingBottom: this.state.viewMargin }]}
-      >
         <Text>itemId: Checklist for {JSON.stringify(params.itemId)}</Text>
         <FlatList
           style={styles.list}
@@ -257,7 +273,9 @@ class TodoList extends Component {
             <View>
               <View style={styles.listItemCont}>
                 <Text> {JSON.stringify(itemId)} </Text>
-                <Button title="X" onPress={() => this.deleteTask(index)} />
+
+                <Button title={item} onPress={() => this.deleteTask(index)} />
+                
                 <Text style={styles.listItem}>
                   {item}
                 </Text>
@@ -276,7 +294,8 @@ class TodoList extends Component {
           returnKeyType="done"
           returnKeyLabel="done"
         />
-      </View>
+
+        </ImageBackground>
     );
   }
 }
@@ -322,28 +341,27 @@ class SetUp extends Component {
 
     };
   }
-  
+
 
   goBack() {
-    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolists", {method: "POST", todolists: JSON.stringify({title: "TestTitle"})})
-    .then((response) => response.json())
-    .then((responseData) => {
+    fetch("http://travelkit.herokuapp.com/api/user/Pavan/todolists", { method: "POST", todolists: JSON.stringify({ title: "TestTitle" }) })
+      .then((response) => response.json())
+      .then((responseData) => {
         AlertIOS.alert(
-            "POST Response",
-            "Response Body -> " + JSON.stringify(responseData.body)
+          "POST Response",
+          "Response Body -> " + JSON.stringify(responseData.body)
         )
-    })
-    .done();
+      })
+      .done();
     this.props.navigation;
-}
+  }
 
   render() {
 
     var counter = [];
     return (
 
-      <View style={styles.container}>
-        <Text style={styles.BigText}>Tap</Text>
+      <View style={styles.SetUpScreenContainer}>
 
         <ScrollView>
           <TextInput
@@ -355,15 +373,17 @@ class SetUp extends Component {
             returnKeyType="done"
             returnKeyLabel="done"
           />
-          <TextInput
-            style={styles.textInput}
-            onChangeText={this.changeTextHandler}
-            onSubmitEditing={this.addTask}
-            value={this.state.text}
-            placeholder="Enter City Name"
-            returnKeyType="done"
-            returnKeyLabel="done"
-          />
+          <Text style={styles.BigText}>Tap</Text>
+          <Picker
+            selectedValue={this.state.language}
+            onValueChange={(itemValue, itemIndex) => this.setState({ language: itemValue })}>
+            <Picker.Item label="New York City" value="newyorkcity" />
+            <Picker.Item label="Boston" value="boston" />
+            <Picker.Item label="Chicago" value="chicago" />
+            <Picker.Item label="Las Vegas" value="las vegas" />
+            <Picker.Item label="Los Angeles" value="losangeles" />
+            <Picker.Item label="San Francisco" value="sanfrancisco" />
+          </Picker>
           <View style={styles.row}>
 
             <Tiles>
@@ -449,7 +469,8 @@ const styles = StyleSheet.create({
     flex: 10,
     marginTop: 10,
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: '#ffffff'
 
   },
   SetUpScreenContainer: {
@@ -457,7 +478,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
 
   },
   header: {
@@ -512,7 +532,21 @@ const styles = StyleSheet.create({
     margin: 5,
 
   },
+  SuitcaseReal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1976D2',
+    borderWidth: 5,
+    borderColor: '#1E88E5',
+    height: 150,
+    borderRadius: 20,
+    marginRight: 15,
+    marginLeft: 15,
+    flex: 1,
+    margin: 5,
+    justifyContent: 'center',
 
+  },
   Suitcase: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -523,6 +557,17 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     flex: 1,
     margin: 5,
+
+  },
+  SuitcaseImageBackground: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1976D2',
+    borderColor: '#e5e5e5',
+    height: 150,
+    borderRadius: 20,
+    flex: 1,
+    justifyContent: 'center',
 
   },
   SuitcaseAlt: {
@@ -566,7 +611,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF",
+    backgroundColor: "#EAEB5E",
     padding: viewPadding,
     paddingTop: 20
   },
@@ -585,7 +630,9 @@ const styles = StyleSheet.create({
   },
   listItemCont: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    
+    
   },
   textInput: {
     height: 40,
@@ -617,6 +664,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 30,
 
+  },
+  BigTextWhite: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 30,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10
+
+  },
+  absoluteView: {
+    flex: 1,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
 
 });

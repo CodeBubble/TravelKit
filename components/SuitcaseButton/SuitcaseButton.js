@@ -19,6 +19,7 @@ export default class SuitcaseButton extends Component {
                 onLongPress={this.props.onLongPress}
             >
                 {this.props.children}
+                
 
             </TouchableOpacity>
         )
