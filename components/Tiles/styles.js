@@ -15,6 +15,7 @@ export default StyleSheet.create({
  margin: 5,
  justifyContent: 'center',
 
+
 },
 SuitcaseAlt: {
   flexDirection: 'column',

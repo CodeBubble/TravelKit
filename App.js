@@ -95,7 +95,6 @@ class HomeScreen extends React.Component {
     var bostonPictureFilePath = require("./assets/images/boston.png");
     var sanfranciscoPictureFilePath = require("./assets/images/sanfrancisco.png");
     return (
-
       <View style={styles.container}>
 
         <ScrollView
@@ -107,8 +106,6 @@ class HomeScreen extends React.Component {
           }>
 
           <FlatList
-
-            ListHeaderComponent={this.renderHeader}
             data={this.state.data}
             renderItem={({ item }) => (
               <View>
@@ -263,7 +260,7 @@ class TodoList extends Component {
 
     return (
 
-<ImageBackground style={[styles.container, { paddingBottom: this.state.viewMargin }]} source={require('./assets/images/sanfrancisco.png')} >
+      <ImageBackground style={[styles.container, { paddingBottom: this.state.viewMargin }]} source={require('./assets/images/sanfrancisco.png')} >
 
         <Text>itemId: Checklist for {JSON.stringify(params.itemId)}</Text>
         <FlatList
@@ -275,7 +272,7 @@ class TodoList extends Component {
                 <Text> {JSON.stringify(itemId)} </Text>
 
                 <Button title={item} onPress={() => this.deleteTask(index)} />
-                
+
                 <Text style={styles.listItem}>
                   {item}
                 </Text>
@@ -295,7 +292,7 @@ class TodoList extends Component {
           returnKeyLabel="done"
         />
 
-        </ImageBackground>
+      </ImageBackground>
     );
   }
 }
@@ -357,78 +354,140 @@ class SetUp extends Component {
   }
 
   render() {
-
+    var bostonPictureFilePath = require("./assets/images/boston.png");
+    var sanfranciscoPictureFilePath = require("./assets/images/sanfrancisco.png");
     var counter = [];
     return (
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.BigText}> Recommended for you </Text>
+          <ScrollView horizontal style={{ height: 1 }}>
 
-      <View style={styles.SetUpScreenContainer}>
+            <SuitcaseButton>
 
-        <ScrollView>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={this.changeTextHandler}
-            onSubmitEditing={this.addTask}
-            value={this.state.text}
-            placeholder="Enter Suitcase Name"
-            returnKeyType="done"
-            returnKeyLabel="done"
-          />
-          <Text style={styles.BigText}>Tap</Text>
-          <Picker
-            selectedValue={this.state.language}
-            onValueChange={(itemValue, itemIndex) => this.setState({ language: itemValue })}>
-            <Picker.Item label="New York City" value="newyorkcity" />
-            <Picker.Item label="Boston" value="boston" />
-            <Picker.Item label="Chicago" value="chicago" />
-            <Picker.Item label="Las Vegas" value="las vegas" />
-            <Picker.Item label="Los Angeles" value="losangeles" />
-            <Picker.Item label="San Francisco" value="sanfrancisco" />
-          </Picker>
-          <View style={styles.row}>
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
 
-            <Tiles>
-              <Icon name="beach" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Vacation </Text>
+            </SuitcaseButton>
 
-            </Tiles>
-            <Tiles>
-              <Icon name="domain" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Business Trip </Text>
-            </Tiles>
-          </View>
-          <View style={styles.row}>
+            <SuitcaseButton>
 
-            <Tiles>
-              <Icon name="beach" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Visit beach </Text>
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
 
-            </Tiles>
+            </SuitcaseButton>
 
-            <Tiles>
-              <Icon name="map" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Explore culture </Text>
-            </Tiles>
-          </View>
-          <View style={styles.row}>
+            <SuitcaseButton>
 
-            <Tiles>
-              <Icon name="food" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Recommended restaurants </Text>
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
 
-            </Tiles>
-            <Tiles>
-              <Icon name="hotel" size={30} color="#ffffff" />
-              <Text style={styles.TextStyle}> Recommended hotels </Text>
-            </Tiles>
-
-          </View>
+            </SuitcaseButton>
 
 
-        </ScrollView>
+          </ScrollView>
+        </View>
+        <View>
+          <Text style={styles.BigText}> Friends </Text>
+          <ScrollView horizontal style={{ height: 1 }}>
 
-        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={() => this.goBack()}>
+            <SuitcaseButton>
 
-        </ActionButton>
+              <Image style={styles.SuitcaseImageBackground}
+                source={(bostonPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
+
+            </SuitcaseButton>
+
+            <SuitcaseButton>
+
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
+
+            </SuitcaseButton>
+
+            <SuitcaseButton>
+
+              <Image style={styles.SuitcaseImageBackground}
+                source={(bostonPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
+
+            </SuitcaseButton>
+
+
+          </ScrollView>
+        </View>
+        <View>
+          <Text style={styles.BigText}> Trending </Text>
+          <ScrollView horizontal style={{ height: 1 }}>
+
+            <SuitcaseButton>
+
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
+
+            </SuitcaseButton>
+
+            <SuitcaseButton>
+
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
+
+            </SuitcaseButton>
+
+            <SuitcaseButton>
+
+              <Image style={styles.SuitcaseImageBackground}
+                source={(sanfranciscoPictureFilePath)}
+                blurRadius={5}
+              />
+              <View style={styles.absoluteView}>
+                <Text style={styles.BigTextWhite}> Featured  </Text>
+              </View>
+
+            </SuitcaseButton>
+
+
+          </ScrollView>
+        </View>
       </View>
     );
   }
@@ -467,12 +526,13 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 10,
-    marginTop: 10,
     flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#ffffff'
 
   },
+
   SetUpScreenContainer: {
     flex: 1,
     marginTop: 10,
@@ -631,8 +691,8 @@ const styles = StyleSheet.create({
   listItemCont: {
     flexDirection: "row",
     alignItems: "center",
-    
-    
+
+
   },
   textInput: {
     height: 40,
@@ -681,5 +741,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent'
   },
-
+  contentContainer: {
+    paddingVertical: 20
+  }
 });
